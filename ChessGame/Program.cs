@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using tabuleiro;
+using xadrez;
 
 namespace ChessGame
 {
@@ -10,12 +8,19 @@ namespace ChessGame
     {
         static void Main(string[] args)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
-
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+            try
+            {
+                Tabuleiro tab = new Tabuleiro(8, 8);
+                tab.ColocarPeca(new Torre(tab, Cor.Preta), new Posicao(0, 0));
+                tab.ColocarPeca(new Rei(tab, Cor.Branca), new Posicao(0, 1));
+                tab.ColocarPeca(new Torre(tab, Cor.Preta), new Posicao(0, 2));
+                Tela.ImprimirTabuleiro(tab);
+            }
+            catch (TabuleiroException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
         }
     }
 }
