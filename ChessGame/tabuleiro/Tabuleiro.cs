@@ -21,6 +21,11 @@
             return Pecas[linha, coluna];
         }
         
+        public Peca Peca(Posicao pos)
+        {
+            return Pecas[pos.Linha, pos.Coluna];
+        }
+
         public bool ValidarPosicao(Posicao posicao)
         {
             if (posicao.Linha < 0 || posicao.Linha >= Linhas || posicao.Coluna < 0 || posicao.Coluna >= Colunas)

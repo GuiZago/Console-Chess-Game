@@ -22,11 +22,26 @@
 
         public abstract bool[,] MovimentosPossiveis();
 
+        public bool VerificarMovimentosPossiveis()
+        {
+            bool[,] matriz = MovimentosPossiveis();
+            for (int i = 0; i < Tabuleiro.Linhas; i++)
+            {
+                for (int j = 0; j < Tabuleiro.Colunas; j++)
+                {
+                    if (matriz[i, j])
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         protected bool VerificarMovimento(Posicao posicao)
         {
             Peca peca = Tabuleiro.Peca(posicao.Linha, posicao.Coluna);
             return peca == null || peca.Cor != Cor;
         }
-
     }
 }
