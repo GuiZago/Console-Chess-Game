@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using tabuleiro;
 using xadrez;
 
@@ -6,6 +7,30 @@ namespace ChessGame
 {
     class Tela
     {
+        public static void ImprimirPartida(Partida partida)
+        {
+            ImprimirTabuleiro(partida.Tabuleiro);
+            ImprimirPecasCapturadas(partida);
+            Console.WriteLine("\nTurno: " + partida.Turno);
+            Console.WriteLine("Jogador Atual: " + partida.JogadorAtual);
+        }
+
+        public static void ImprimirPecasCapturadas(Partida partida)
+        {
+            Console.WriteLine("\nPecas Capturadas");
+            Console.Write("Brancas: [ ");
+            foreach (Peca p in partida.ListaPecasCapturadas(Cor.Branca))
+            {
+                Console.Write(p + " ");
+            }
+            Console.Write("]\nPretas: [ ");
+            foreach (Peca p in partida.ListaPecasCapturadas(Cor.Preta))
+            {
+                Console.Write(p + " ");
+            }
+            Console.WriteLine("]");
+        }
+
         public static void ImprimirTabuleiro(Tabuleiro tabuleiro)
         {
             for(int i = 0; i < tabuleiro.Linhas; i++)
@@ -68,8 +93,6 @@ namespace ChessGame
                 }
                 Console.Write(" ");
             }
-
-           
         }
 
         public static PosicaoXadrez LerPosicaoXadrez()

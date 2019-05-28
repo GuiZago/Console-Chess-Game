@@ -17,9 +17,7 @@ namespace ChessGame
                     try
                     {
                         Console.Clear();
-                        Tela.ImprimirTabuleiro(partida.Tabuleiro);
-                        Console.WriteLine("\nTurno: " + partida.Turno);
-                        Console.WriteLine("Jogador Atual: " + partida.JogadorAtual);
+                        Tela.ImprimirPartida(partida);
 
                         Console.Write("\nOrigem: ");
                         Posicao origem = Tela.LerPosicaoXadrez().ToPosicao();
