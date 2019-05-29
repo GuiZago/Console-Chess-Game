@@ -8,6 +8,7 @@ namespace xadrez
     {
         public Tabuleiro Tabuleiro { get; private set; }
         public bool Terminada { get;private set; }
+        public bool Xeque { get; private set; }
         public int Turno { get; private set; }
         public Cor JogadorAtual { get; private set; }
         private HashSet<Peca> pecasJogo;
@@ -22,6 +23,7 @@ namespace xadrez
             pecasCapturadas = new HashSet<Peca>();
             IniciarPartida();
             Terminada = false;
+            Xeque = false;
         }
 
         private void AdicionarPeca(char coluna, int linha, Peca peca)
@@ -38,7 +40,7 @@ namespace xadrez
             AdicionarPeca('d', 2, new Torre(Tabuleiro, Cor.Branca));
             AdicionarPeca('e', 2, new Torre(Tabuleiro, Cor.Branca));
             AdicionarPeca('e', 1, new Torre(Tabuleiro, Cor.Branca));
-            AdicionarPeca('d', 1, new Torre(Tabuleiro, Cor.Branca));
+            AdicionarPeca('d', 1, new Rei(Tabuleiro, Cor.Branca));
 
             //Pretas
             AdicionarPeca('c', 8, new Torre(Tabuleiro, Cor.Preta));
@@ -46,7 +48,7 @@ namespace xadrez
             AdicionarPeca('d', 7, new Torre(Tabuleiro, Cor.Preta));
             AdicionarPeca('e', 7, new Torre(Tabuleiro, Cor.Preta));
             AdicionarPeca('e', 8, new Torre(Tabuleiro, Cor.Preta));
-            AdicionarPeca('d', 8, new Torre(Tabuleiro, Cor.Preta));
+            AdicionarPeca('d', 8, new Rei(Tabuleiro, Cor.Preta));
 
         }
 
@@ -101,6 +103,57 @@ namespace xadrez
             }
         }
 
+        private Cor CorAdvarsaria(Cor cor)
+        {
+            if (cor == Cor.Branca)
+            {
+                return Cor.Preta;
+            }
+            else
+            {
+                return Cor.Branca;
+            }
+        }
+
+        private Peca PecaRei(Cor cor)
+        {
+            foreach (Peca p in ListaPecasAtivas(cor))
+            {
+                if (p is Rei)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        public bool VerificarXeque(Cor cor)
+        {
+            Peca R = null;
+            foreach (Peca p in ListaPecasAtivas(cor))
+            {
+                if (p is Rei)
+                {
+                    R = p;
+                }
+            }
+
+            if (R == null)
+            {
+                throw new TabuleiroException("Não há rei, reinicie o jogo");
+            }
+
+            foreach (Peca p in ListaPecasAtivas(CorAdvarsaria(cor)))
+            {
+                bool[,] matriz = p.MovimentosPossiveis();
+                if (matriz[R.Posicao.Linha, R.Posicao.Coluna])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void ExecutarMovimento(Posicao origem, Posicao destino)
         {
             Peca peca = Tabuleiro.RetirarPeca(origem);
@@ -110,6 +163,21 @@ namespace xadrez
             if (pecaCapturada != null)
             {
                 pecasCapturadas.Add(pecaCapturada);
+            }
+
+            if (VerificarXeque(JogadorAtual))
+            {
+                DesfazerMovimento(origem, destino, pecaCapturada);
+                throw new TabuleiroException("Você esta em xeque!");
+            }
+
+            if (VerificarXeque(CorAdvarsaria(JogadorAtual)))
+            {
+                Xeque = true;
+            }
+            else
+            {
+                Xeque = false;
             }
 
             Turno++;
@@ -122,6 +190,20 @@ namespace xadrez
             {
                 JogadorAtual = Cor.Branca;
             }
+
+            
+        }
+
+        private void DesfazerMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
+        {
+            Peca p = Tabuleiro.RetirarPeca(destino);
+            p.DecrementarQtdMovimentos();
+            if (pecaCapturada != null)
+            {
+                Tabuleiro.ColocarPeca(pecaCapturada, destino);
+                pecasCapturadas.Remove(pecaCapturada);
+            }
+            Tabuleiro.ColocarPeca(p, origem);
         }
     }
 }

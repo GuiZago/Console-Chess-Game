@@ -13,6 +13,10 @@ namespace ChessGame
             ImprimirPecasCapturadas(partida);
             Console.WriteLine("\nTurno: " + partida.Turno);
             Console.WriteLine("Jogador Atual: " + partida.JogadorAtual);
+            if (partida.Xeque)
+            {
+                Console.WriteLine("XEQUE!");
+            }
         }
 
         public static void ImprimirPecasCapturadas(Partida partida)
